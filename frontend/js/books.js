@@ -50,4 +50,23 @@ $(function () {
             .fail(showError);
     });
 
+    $('#bookAdd').on('submit', function (event) {
+        event.preventDefault();
+
+        console.log(this.elements.title.value, this.elements.description.value);
+
+        let book = {
+            title: this.elements.title.value,
+            description: this.elements.description.value
+        };
+
+        $.post({
+            url: URL,
+            data: book
+        }).done(function (res) {
+            book = res.success[0];
+            $('#booksList').append($(renderBook(book)));
+        }).fail(showError);
+    })
+
 });
