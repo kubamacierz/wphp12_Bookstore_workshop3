@@ -1,5 +1,12 @@
 $(function () {
 
+    const URL = "http://localhost:8000/book";
+
+    function showError(xhr, status, error) {
+        console.log(xhr, status, error);
+        showModal("Error: " + error);
+    }
+
     function renderBook(book) {
         return `<li class="list-group-item">
             <div class="panel panel-default">
@@ -19,15 +26,28 @@ $(function () {
         </li>`;
     }
 
-    $.getJSON("http://localhost:8000/book")
+    $.getJSON(URL)
         .done(function (result) {
             console.log(result);
             const bookListHTML = result.success.map(renderBook).join("");
             $("#booksList").html(bookListHTML);
         })
-        .fail(function (xhr, status, error) {
-            console.log(xhr, status, error);
-            showModal("Error");
+        .fail(showError);
+
+    $('#booksList').on('click', '.btn-book-remove', function () {
+        console.log(`Deleting book with id: ${this.dataset.id}`);
+
+        const button = this;
+
+        $.ajax({
+            url: URL + "/" + this.dataset.id,
+            type: "DELETE"
         })
+            .done(function () {
+                console.log("DELETED");
+                $(button).closest('.list-group-item').remove();
+            })
+            .fail(showError);
+    });
 
 });
