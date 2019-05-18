@@ -20,7 +20,7 @@ try {
 //if request URI is rest.php/book/1
 //we will parse part book/1 and explode it
 //to get name of class (book) and optional id from db (1)
-$uriPathInfo = $_SERVER['PATH_INFO'];
+$uriPathInfo = $_SERVER['REQUEST_URI'];
 //explode path info
 $path = explode('/', $uriPathInfo);
 $requestClass = $path[1];
@@ -41,6 +41,7 @@ if (!isset($response['error'])) {//process request if no db error
 }
 
 header('Content-Type: application/json');//return json header
+header('Access-Control-Allow-Origin: *');
 
 if (isset($response['error'])) {
     header("HTTP/1.0 400 Bad Request");//return proper http code if error
